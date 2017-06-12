@@ -1,0 +1,110 @@
+﻿
+li { 
+     padding: 10px;
+ 
+}
+
+input[type=text], select {
+   
+    padding: 7px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+label{
+    padding: 5px 0px;
+}
+#times{
+    padding-right:9px;
+    width:10px;
+    display:inline;
+}
+#datepicker{
+    padding:20px;
+    
+    padding-left: 25px;
+}
+#secondmodal
+{
+    
+   
+}
+.modal-bod{
+     padding:40px;
+}
+#secondmodalfooter{
+    
+    padding: 15px;
+    text-align: right;
+    
+}
+#secondmodalheader{
+    
+    padding: 10px;
+    
+}
+#myModalSmall
+{
+    padding:140px;
+}
+#mainheading{
+    background-color:lightblue;
+    text-align:center;
+}
+#previous
+{
+    display:inline;
+    float:right;
+    width:50px;
+}
+#next{
+    display:inline;
+    float:right;
+    width:50px;
+}
+#right{
+    width:30px;
+}
+#left{
+    width:30px;
+}
+#today{
+    display:inline;
+    float:right;
+}
+#maindates{
+    font-size:20px;
+    text-align:center;
+}
+
+
+#table-wrapper {
+  position:relative;
+  padding:20px;
+}
+#table-scroll {
+  height:400px;
+  overflow:auto;  
+  margin-top:20px;
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+  
+  color:black;
+}
+#table-wrapper table thead th .text {
+  position:absolute;   
+  top:10px;
+  z-index:2;
+  height:60px;
+  width:65%;
+  border:1px solid red;
+}
+#r1{
+    color:red;
+}

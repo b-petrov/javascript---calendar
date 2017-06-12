@@ -1,0 +1,1680 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        body {
+            font-family: Verdana,sans-serif;
+        }
+
+        .month {
+            padding: 70px 25px;
+            width: 100%;
+            background: #1abc9c;
+        }
+
+            .month ul {
+                margin: 0;
+                padding: 0;
+            }
+
+                .month ul li {
+                    color: white;
+                    font-size: 20px;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                }
+
+            .month .prev {
+                float: left;
+               text-align:center;
+                
+            }
+
+            .month .next {
+                float: right;
+                
+            }
+
+        .weekdays {
+            margin: 0;
+            padding: 10px 0;
+            background-color: #ddd;
+        }
+
+            .weekdays li {
+                display: inline-block;
+                width: 13.6%;
+                color: #666;
+                text-align: center;
+            }
+
+        .days {
+            padding: 10px 0;
+            background: #eee;
+            margin: 0;
+        }
+
+            .days li {
+                list-style-type: none;
+                display: inline-block;
+                width: 13.6%;
+                text-align: center;
+                margin-bottom: 5px;
+                font-size: 12px;
+                color: #777;
+            }
+
+                .days li .active {
+                    padding: 5px;
+                    background: #1abc9c;
+                    color: white !important;
+                }
+
+        /* Add media queries for smaller screens */
+        @media screen and (max-width:720px) {
+            .weekdays li, .days li {
+                width: 13.1%;
+            }
+        }
+
+        @media screen and (max-width: 420px) {
+            .weekdays li, .days li {
+                width: 12.5%;
+            }
+
+                .days li .active {
+                    padding: 2px;
+                }
+        }
+
+        @media screen and (max-width: 290px) {
+            .weekdays li, .days li {
+                width: 12.2%;
+            }
+        }
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+        .tables1{
+           padding:3px;
+           
+        }
+        .tabbody{
+
+        }
+        .tabheader{
+
+            padding:3px;
+        }
+        .arslan{
+            padding: 5px;
+            width: 100%;
+            height: 10%;
+            background: white;
+        }
+
+        .tag label {
+            padding: 2px 0px;
+        }
+
+        .tag {
+            background-color: #f4f4f4;
+        }
+
+        .tabbody > tr > th:nth-child(1) {
+            text-align: center;
+        }
+
+        .tabheader > tr > th:nth-child(1) {
+            text-align: center;
+            padding: 3px 0px;
+        }
+
+        @media (max-width: 1040px) {
+            .tabheader > tr > th:nth-child(2),
+            .tabheader > tr > th:nth-child(3) {
+                display: none;
+            }
+
+            .tabbody > tr > td:nth-child(2),
+            .tabbody > tr > td:nth-child(3) {
+                display: none;
+            }
+
+            #divcalendartable > td:nth-child(n+0) {
+                padding-left: 3px;
+                padding-right: 3px;
+            }
+
+            #divcalendartable > td:nth-child(n+10) {
+                padding-left: 1px;
+                padding-right: 1px;
+            }
+
+            body {
+                padding-left: 0px !important;
+            }
+
+            html {
+                padding-left: 10px !important;
+            }
+        }
+
+        #calendaroverallcontrols a {
+            font-size: 45px;
+        }
+
+    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/ModalCss.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.css" rel="stylesheet" />
+    <link href="css/animate.css" rel="stylesheet" />
+    <link href="newcss/custom.css" rel="stylesheet" />
+    
+    <link href="css/jquery-ui.css" rel="stylesheet" />
+
+  <!-- <link href="css/main.css" rel="stylesheet" />-->
+
+  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!--<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>-->
+
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+
+  
+   <!-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script>-->
+
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
+
+    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <script>
+  $(function(){
+      $("#table1").dataTable();
+      
+  })
+    var clickedDate = new Date();
+    var selectedReservation = null;
+    var selectedRsvtIndex = -1;
+  
+    </script>
+   
+    <script type="text/javascript">
+        var array = [];
+        var cnt = 0;
+    $(document).ready(function () {
+       
+       
+        $('#calClockInDatePicker_peers').datepicker();
+        $('#calClockInDatePicker_peers2').datepicker();
+
+        var table = document.getElementById("table1");
+        var rows = table.getElementsByTagName("tr");
+       
+        var countcolumns = 0;
+       
+        $('#btnNext, #btnPrev').click(function () {
+            if (this.id == "btnNext") {
+                clickedDate = new Date(clickedDate.setMonth(clickedDate.getMonth() + 1, 1));
+            }
+            else {
+                clickedDate = new Date(clickedDate.setMonth(clickedDate.getMonth() - 1, 1));
+            }
+            if (this.id == 'btnNext') {
+                var cntn = 0;
+               
+                var rowtotal = document.getElementById("table1").rows.length;
+                var arrcount = array.length;
+
+        
+                for (var rowst = 2; rowst < rowtotal; rowst++) {
+                    for (var column = 0; column <= 31; column++) {
+
+                        // has to be a - 1 as day row has first col missing due to rowspan of month
+                        if (rows[1].cells[column]) {
+
+                            for (var f = 0; f < arrcount; f++) {
+
+
+                                var set = rows[1].cells[column].innerHTML;
+                                if (set == array[f]) {
+
+                                    document.getElementById("table1").rows[rowst].cells[column + 3].style.backgroundColor = "#ffff99";
+                                    document.getElementById("table1").rows[rowst].cells[column + 2].style.backgroundColor = "#ffff99";
+
+                                    
+                                }
+
+                                
+
+                                //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "White";
+
+
+                            }
+
+                        }
+
+                    }
+                }
+               
+                var checkd = 0;
+
+                for (var column = 0; column <= 31; column++) {
+
+                    // has to be a - 1 as day row has first col missing due to rowspan of month
+                    if (rows[1].cells[column]) {
+
+
+
+                        var set = rows[1].cells[column].innerHTML;
+                        checkd++
+                        //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "Yellow";
+
+
+
+
+                    }
+
+                }
+
+                if (checkd == 31) {
+                    // month month1
+                    // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                    document.getElementById("monthandyear").colSpan = "31";
+                    $(".30").show();
+                    $(".291").show();
+                    $(".292").show();
+                    $(".281").show();
+                    $(".282").show();
+                    $(".283").show();
+
+
+                }
+                if (checkd == 28) {
+                    // month month1
+                    // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                    document.getElementById("monthandyear").colSpan = "28";
+                    $(".281").hide();
+                    $(".282").hide();
+                    $(".283").hide();
+
+                }
+                if (checkd == 30) {
+                    // month month1
+                    // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                    document.getElementById("monthandyear").colSpan = "30";
+                    $(".30").hide();
+                    $(".281").show();
+                    $(".282").show();
+                    $(".283").show();
+                    $(".291").show();
+                    $(".292").show();
+
+                }
+                if (checkd == 29) {
+                    // month month1
+                    // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                    document.getElementById("monthandyear").colSpan = "29";
+                    $(".291").hide();
+                    $(".292").hide();
+                    $(".30").show();
+                    $(".281").show();
+                    $(".282").show();
+                    $(".283").show();
+                }
+
+                 ///////////////////////////////////saturday and sunday color////////
+
+                  
+               
+                ///////////////////////////////////////////////////////////////////////
+                    
+
+               //     for (var f = 0; f < arrcount; f++) {
+               //         alert(array[f])
+               //     }
+              
+
+               //alert("next")
+
+            }
+            else if (this.id == 'btnPrev') {
+               
+
+
+
+             
+                    var cntn = 0;
+
+                    var rowtotal = document.getElementById("table1").rows.length;
+                    var arrcount = array.length;
+
+
+                    for (var rowst = 2; rowst < rowtotal; rowst++) {
+                        for (var column = 0; column <= 31; column++) {
+
+                            // has to be a - 1 as day row has first col missing due to rowspan of month
+                            if (rows[1].cells[column]) {
+
+                                for (var f = 0; f < arrcount; f++) {
+
+
+                                    var set = rows[1].cells[column].innerHTML;
+                                    if (set == array[f]) {
+
+                                        document.getElementById("table1").rows[rowst].cells[column + 3].style.backgroundColor = "#ffff99";
+                                        document.getElementById("table1").rows[rowst].cells[column + 2].style.backgroundColor = "#ffff99";
+
+
+                                    }
+
+                                    //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "Yellow";
+
+
+                                }
+
+                            }
+
+                        }
+                    }
+
+                    var checkd = 0;
+
+                    for (var column = 0; column <= 31; column++) {
+
+                        // has to be a - 1 as day row has first col missing due to rowspan of month
+                        if (rows[1].cells[column]) {
+
+
+
+                            var set = rows[1].cells[column].innerHTML;
+                            checkd++
+                            //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "Yellow";
+
+
+
+
+                        }
+
+                    }
+
+                    if (checkd == 31) {
+                        // month month1
+                        // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                        document.getElementById("monthandyear").colSpan = "31";
+                        $(".30").show();
+                        $(".291").show();
+                        $(".292").show();
+                        $(".281").show();
+                        $(".282").show();
+                        $(".283").show();
+
+
+                    }
+                    if (checkd == 28) {
+                        // month month1
+                        // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                        document.getElementById("monthandyear").colSpan = "28";
+                        $(".281").hide();
+                        $(".282").hide();
+                        $(".283").hide();
+
+                    }
+                    if (checkd == 30) {
+                        // month month1
+                        // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                        document.getElementById("monthandyear").colSpan = "30";
+                        $(".30").hide();
+                        $(".281").show();
+                        $(".282").show();
+                        $(".283").show();
+                        $(".291").show();
+                        $(".292").show();
+
+                    }
+                    if (checkd == 29) {
+                        // month month1
+                        // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+                        document.getElementById("monthandyear").colSpan = "29";
+                        $(".291").hide();
+                        $(".292").hide();
+                        $(".30").show();
+                        $(".281").show();
+                        $(".282").show();
+                        $(".283").show();
+                    }
+                   // alert("afterclick" + checkd)
+                    ///////////////////////////////////saturday and sunday color////////
+
+
+
+                    ///////////////////////////////////////////////////////////////////////
+
+
+                  
+
+
+
+
+
+              //  alert('Submit prev clicked');
+
+
+
+
+
+
+            }
+
+            showEvents();
+        });
+
+        var arrcount = array.length;
+
+        //for (var f = 0; f < arrcount; f++) {
+        //    alert(array[f])
+        //}
+      
+        var rowtotal = document.getElementById("table1").rows.length;
+           
+        
+        for (var rowst = 2; rowst < rowtotal; rowst++)
+            {
+            for (var column = 0; column <= 31; column++) {
+
+                // has to be a - 1 as day row has first col missing due to rowspan of month
+                if (rows[1].cells[column]) {
+
+                    for (var f = 0; f < arrcount; f++) {
+                        
+                        
+                        var set = rows[1].cells[column].innerHTML;
+                        
+                    if (set == array[f]) {
+                        
+                        document.getElementById("table1").rows[rowst].cells[column + 3].style.backgroundColor = "#ffff99";
+                        document.getElementById("table1").rows[rowst].cells[column + 2].style.backgroundColor = "#ffff99";
+
+                    cnt = cnt + 1;
+                    }
+                   
+                    //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "Yellow";
+
+
+                }
+            
+                }
+
+        }
+       
+        }
+      
+
+        var checkc = 0;
+        for (var column = 0; column <= 31; column++) {
+
+            // has to be a - 1 as day row has first col missing due to rowspan of month
+            if (rows[1].cells[column]) {
+
+               
+                
+                    var set = rows[1].cells[column].innerHTML;
+                    checkc++
+                    //document.getElementById("table1").rows[c].cells[column].style.backgroundColor = "Yellow";
+
+
+                
+
+            }
+
+        }
+
+        if (checkc == 30)
+        {
+           // month month1
+           // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+            document.getElementById("monthandyear").colSpan = "30";
+            $(".30").hide();
+            // document.getElementById("30").style.display = 'none';
+        }
+        if (checkc == 31) {
+            // month month1
+            // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+            document.getElementById("monthandyear").colSpan = "31";
+        }
+        
+        if (checkc == 29) {
+            // month month1
+            // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+            document.getElementById("monthandyear").colSpan = "29";
+
+        }
+
+        if (checkc == 28) {
+            // month month1
+            // document.getElementsByClassName('month1')[0].style.visibility = 'hidden';
+            document.getElementById("monthandyear").colSpan = "29";
+        }
+      
+       // alert("count" + checkc)
+    });
+    
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+
+
+
+
+
+        $("#table1 td").click(function () {
+            var column_num = parseInt( $(this).index() ) + 1;
+            var row_num = parseInt( $(this).parent().index() )+1;
+            var newcol = column_num - 3;
+
+            var ext8 = document.getElementById("table1").rows[row_num+1].cells;
+            var extr9 = ext8[0].innerHTML;
+
+            var ext1 = document.getElementById("table1").rows[1].cells[newcol - 1].innerHTML;
+            var ext2 = document.getElementById("table1").rows[1].cells[newcol].innerHTML;
+
+          
+            var date = new Date();
+
+            document.getElementById("calClockInDatePicker_peers").value = (date.getMonth() + 1) + "/" + ext1 + "/" + (date.getYear() + 
+                1900);
+            document.getElementById("calClockInDatePicker_peers2").value = (date.getMonth() + 1) + "/" + ext2 + "/" + (date.getYear() + 1900);
+            // document.getElementById("calClockInDatePicker_peers").value = "11/"+ext1+"/2016";
+            // document.getElementById("calClockInDatePicker_peers2").value = "11/" + ext2 + "/2016";
+
+            document.getElementById("sel1").value = extr9;
+            $('#sel1').change(function () {
+                $('#sel1').val(extr9);
+            });
+            var statu = document.querySelector('input[name="gender"]:checked').value;
+            document.getElementById("gender") = statu;
+            var name = document.getElementById("name").value;
+            document.getElementById("name").value = name;
+
+            
+        });
+
+       
+    });
+    </script>
+
+   
+    <script>
+       
+        
+    </script>
+   
+    <script>
+        function changedata()
+        {
+            var strUser = e.options[e.selectedIndex].text;
+       
+        //$("#dropdowns :selected").text(); // The text content of the selected option
+        //$("#dropdowns").val(); // The value of the selected option
+        //alert($("#dropdowns").val())
+        }
+    </script>
+  
+   
+
+
+</head>
+<body>
+    <div class="tag" style="display: none; z-index: 10000;">
+        <label class="reservation_name"> </label> <br>
+        <label class="reservation_room"> </label> <br>
+        <label class="reservation_stat"> </label> <br>
+        <label class="reservation_paid"> </label> <br>
+    </div>
+
+    <div class="dropdown">
+        <button id="dropdowns"   class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            Show Data
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu"onchange="changedata()">
+            <li><a href="#">01-07</a></li>
+            <li><a href="#">01-10</a></li>
+            <li><a href="#">01-30</a></li>
+        </ul>
+    </div>
+
+    <div class="divcalendar">
+
+        <div id="calendaroverallcontrols">
+            <!-- <div id="year"></div> -->
+            <div class="row">
+                <div class="col-md-9 col-sm-8"> </div>
+                <div class="col-md-3 col-sm-4 col-xs-12" style="text-align: center;">
+                    <a>Today</a>
+                    <a id="btnPrevYr"  href="#" title="Previous Year"><span></span></a>
+                    <a id="btnPrev" onclick="previousfun()" href="#" title="Previous Month"><span><</span></a>
+                    <a id="btnNext" onclick="nextfun()" href="#" title="Next Month"><span>></span></a>
+                    <a id="btnNextYr" href="#" title="Next Year"><span></span></a>
+                </div>
+                
+                <!-- <div class="col-md-9 col-sm-7 col-xs-1"></div>
+                <h3 class="col-md-1 col-sm-1 col-xs-2" >Today</h3>
+                <div class="col-md-2 col-sm-4 col-xs-9" id="calendarmonthcontrols" style="font-size:48px;">
+
+                    <a id="btnPrevYr"  href="#" title="Previous Year"><span></span></a>
+
+                    <a id="btnPrev" onclick="previousfun()" href="#" title="Previous Month"><span><</span></a>
+                    <a id="btnNext" onclick="nextfun()" href="#" title="Next Month"><span>></span></a>
+
+                    
+                    <a id="btnNextYr" href="#" title="Next Year"><span></span></a>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+
+    <div id="table-wrapper" >
+        
+            <table style="border-collapse:collapse; caption-side:bottom; width:auto;" class="tables1 table-striped table-bordered table-condensed " id="table1" >
+
+                <colgroup span="3"></colgroup>
+
+                <thead class="tabheader">
+                    <tr>
+                        <th rowspan="3">Room number</th>
+                        <th rowspan="3">Type</th>
+                        <th rowspan="3">Status</th>
+                        <th id="monthandyear" class="month" colspan="31" style="text-align:center;"  scope="colgroup">November 2016</th>
+                       
+                     </tr>
+
+                   
+                    <tr id="divcalendartable"> </tr>
+</thead>
+
+                <!-- <tbody class="tabbody" onclick="addrow()" style="width:auto"> -->
+                <tbody class="tabbody" style="width:auto">
+
+
+                    <tr>
+                        <th>101</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+
+                    </tr>
+
+                    <tr>
+                        <th>103</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+
+
+                    </tr>
+
+                    <tr>
+                        <th>110</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+
+
+                    </tr>
+
+                    <tr>
+                        <th>111</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+
+
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+                       
+
+
+                    </tr>
+
+                    <tr>
+                        <th>125</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>                       
+                    </tr>
+
+                    <tr>
+                        <th>126</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+
+
+                    </tr>
+
+                    <tr>
+                        <th>127</th>
+                        <td>One Bed</td>
+                        <td>Dirty</td>
+                        <td></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+                        <td scope="col"></td>
+
+                        <td class="291" scope="col"></td>
+                        <td class="292" scope="col"></td>
+                        <td class="30" scope="col"></td>
+                        <td class="281" scope="col"></td>
+                        <td class="282" scope="col"></td>
+                        <td class="283" scope="col"></td>
+                        
+
+                    </tr>
+
+                 
+
+
+                </tbody>
+            </table>
+           
+        </div>
+
+
+
+            <div class="container">
+                <!-- Trigger the modal with a button -->
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Date</h4>
+                            </div>
+                            <div class="modal-body">
+                                <ul>
+                                    <li class="divider">
+                                        <label for="name" style="width:10%; float:left ; display:inline;">
+                                            Name
+                                        </label>
+                                        <input type="text" id="name"  name="text" style="width:90%;" />
+                                        <br />
+                                        <br />
+                                    </li>
+
+                                    <li class="divider">
+
+                                        <div class="form-group">
+                                            <label for="sel1" style="width:10%; float:left ; display:inline;">
+                                                Room
+                                            </label>
+                                            <select class="form-control" id="sel1" style="width:90%;">
+                                                <option>101</option>
+                                                <option>103</option>
+                                                <option>110</option>
+                                                <option>111</option>
+                                                <option>125</option>
+                                                <option>126</option>
+                                                <option>127</option>
+
+                                            </select>
+                                        </div>
+
+                                        <br />
+                                    </li>
+
+                                    <li>
+                                        <label for="form2" style="width:10%; float:left ; display:inline;" >
+                                            Status
+                                        </label>
+                                        <form action="">
+                                            <input checked="checked" type="radio" name="gender" value="New"> New
+                                            <input type="radio" name="gender" value="Confirmed"> Confirmed
+                                            <input type="radio" name="gender" value="Arrived"> Arrived
+                                            <input type="radio" name="gender" value="Checked Out"> Checked Out
+
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <label for="checkbox_id">Paid</label>
+
+                                        <input type="checkbox" class="checkbox1" name="checkbox" id="checkbox_id" value="value">
+                                        
+                                    </li>
+                                    <li class="divider" id="datepicker">
+                                        <label id="times">Time</label>
+
+                                        <input type="text" id="calClockInDatePicker_peers" />
+                                        -
+                                        <input type="text" id="calClockInDatePicker_peers2" />
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button style="float:left;" type="button" id="save" class="btn btn-primary" onclick="saveEvent()" >Save</button>
+                                <button style="float:left;" type="button" id="delete" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="mod" onclick="secondmodal()">Delete</button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>-->
+
+
+
+
+
+            <div class="modal fade" id="myModalSmall" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-heade" id="secondmodalheader">
+                            <h4 class="modal-title" style="width:100%;">Event will be deleted permanently, are you sure?</h4>
+                        </div>
+                        <div class="modal-bod" id="secondmodal">
+                            <button style="float:left; width:100px;" type="button" id="save" class="btn btn-primary" onclick="deleteEvent()">Ok</button>
+                            <button style="float:right; width:100px;" type="button" id="delete" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+
+                        </div>
+                        <div class="modal-foote" id="secondmodalfooter">
+                            <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+  
+    <script>
+        var totaldays = 0;
+        var sum;
+        var splic=0;
+        var sun;
+        var array = [];
+        var array2 = [];
+        
+        var Calendar = function (o) {
+           
+
+              //Store div id
+              this.divId = o.ParentID;
+
+              // Days of week, starting on Sunday
+              this.DaysOfWeek = o.DaysOfWeek;
+              
+              console.log("this.DaysOfWeek == ", this.DaysOfWeek)
+             
+              // Months, stating on January
+              this.Months = o.Months;
+
+              console.log("this.Months == ", this.Months)
+
+              // Set the current month, year
+              var d = new Date();
+
+              console.log("d == ", d)
+
+              this.CurrentMonth = d.getMonth();
+              
+              console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+              this.CurrentYear = d.getFullYear();
+
+              console.log("this.CurrentYear == ", this.CurrentYear);
+
+              var f = o.Format;
+
+              console.log("o == ", o);
+
+              console.log("f == ", f);
+
+              //this.f = typeof(f) == 'string' ? f.charAt(0).toUpperCase() : 'M';
+
+              if (typeof (f) == 'string') {
+                  this.f = f.charAt(0).toUpperCase();
+              } else {
+                  this.f = 'M';
+              }
+
+              console.log("this.f == ", this.f);
+          };
+       
+          // Goes to next month
+          Calendar.prototype.nextMonth = function () {
+              console.log("Calendar.prototype.nextMonth = function() {");
+
+              if (this.CurrentMonth == 11) {
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  this.CurrentMonth = 0;
+
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  console.log("this.CurrentYear == ", this.CurrentYear);
+
+                  this.CurrentYear = this.CurrentYear + 1;
+
+                  console.log("this.CurrentYear == ", this.CurrentYear);
+              } else {
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  this.CurrentMonth = this.CurrentMonth + 1;
+                  
+                  console.log("this.CurrentMonth + 1 == ", this.CurrentMonth);
+              }
+
+              this.showCurrent();
+          };
+
+          // Goes to previous month
+          Calendar.prototype.previousMonth = function () {
+              console.log("Calendar.prototype.previousMonth = function() {");
+              splic = sum;
+              if (this.CurrentMonth == 0) {
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  this.CurrentMonth = 11;
+
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  console.log("this.CurrentYear == ", this.CurrentYear);
+
+                  this.CurrentYear = this.CurrentYear - 1;
+
+                  console.log("this.CurrentYear == ", this.CurrentYear);
+              } else {
+                  console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+                  this.CurrentMonth = this.CurrentMonth - 1;
+
+                  console.log("this.CurrentMonth - 1 == ", this.CurrentMonth);
+              }
+
+              this.showCurrent();
+          };
+
+          //
+          Calendar.prototype.previousYear = function () {
+              console.log(" ");
+
+              console.log("Calendar.prototype.previousYear = function() {");
+
+              console.log("this.CurrentYear == " + this.CurrentYear);
+
+              this.CurrentYear = this.CurrentYear - 1;
+
+              console.log("this.CurrentYear - 1 i.e. this.CurrentYear == " + this.CurrentYear);
+
+              this.showCurrent();
+          }
+
+          //
+          Calendar.prototype.nextYear = function () {
+              console.log(" ");
+
+              console.log("Calendar.prototype.nextYear = function() {");
+
+              console.log("this.CurrentYear == " + this.CurrentYear);
+
+              this.CurrentYear = this.CurrentYear + 1;
+
+              console.log("this.CurrentYear - 1 i.e. this.CurrentYear == " + this.CurrentYear);
+
+              this.showCurrent();
+          }
+
+          // Show current month
+          Calendar.prototype.showCurrent = function () {
+              console.log(" ");
+
+              console.log("Calendar.prototype.showCurrent = function() {");
+
+              console.log("this.CurrentYear == ", this.CurrentYear);
+
+              console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+              this.Calendar(this.CurrentYear, this.CurrentMonth);
+          };
+
+          // Show month (year, month)
+          Calendar.prototype.Calendar = function (y, m) {
+              console.log(" ");
+
+              console.log("Calendar.prototype.Calendar = function(y,m){");
+
+              typeof (y) == 'number' ? this.CurrentYear = y : null;
+
+              console.log("this.CurrentYear == ", this.CurrentYear);
+
+              typeof (y) == 'number' ? this.CurrentMonth = m : null;
+
+              console.log("this.CurrentMonth == ", this.CurrentMonth);
+
+              // 1st day of the selected month
+              var firstDayOfCurrentMonth = new Date(y, m, 1).getDay();
+
+              console.log("firstDayOfCurrentMonth == ", firstDayOfCurrentMonth);
+
+              // Last date of the selected month
+              var lastDateOfCurrentMonth = new Date(y, m + 1, 0).getDate();
+
+              console.log("lastDateOfCurrentMonth == ", lastDateOfCurrentMonth);
+
+              // Last day of the previous month
+              console.log("m == ", m);
+
+              var lastDateOfLastMonth = m == 0 ? new Date(y - 1, 11, 0).getDate() : new Date(y, m, 0).getDate();
+
+              console.log("lastDateOfLastMonth == ", lastDateOfLastMonth);
+
+              console.log("Print selected month and year.");
+
+              // Write selected month and year. This HTML goes into <div id="year"></div>
+              //var yearhtml = '<span class="yearspan">' + y + '</span>';
+
+              // Write selected month and year. This HTML goes into <div id="month"></div>
+              //var monthhtml = '<span class="monthspan">' + this.Months[m] + '</span>';
+
+              // Write selected month and year. This HTML goes into <div id="month"></div>
+              var monthandyearhtml = '<span id="monthandyearspan">' + this.Months[m] + ' - ' + y + '</span>';
+
+              console.log("monthandyearhtml == " + monthandyearhtml);
+
+
+            
+
+
+
+
+              var html = '<table>';
+
+              // Write the header of the days of the week
+              html += '<tr>';
+
+              console.log(" ");
+
+              console.log("Write the header of the days of the week");
+
+              for (var i = 0; i < 7; i++) {
+                  console.log("i == ", i);
+
+                  console.log("this.DaysOfWeek[i] == ", this.DaysOfWeek[i]);
+                  
+
+              }
+
+              html += '</tr>';
+
+              console.log("Before conditional operator this.f == ", this.f);
+
+              //this.f = 'X';
+
+              var p = dm = this.f == 'M' ? 1 : firstDayOfCurrentMonth == 0 ? -5 : 2;
+              
+              /*var p, dm;
+
+              if(this.f =='M') {
+                dm = 1;
+
+                p = dm;
+              } else {
+                if(firstDayOfCurrentMonth == 0) {
+                  firstDayOfCurrentMonth == -5;
+                } else {
+                  firstDayOfCurrentMonth == 2;
+                }
+              }*/
+
+              console.log("After conditional operator");
+
+              console.log("this.f == ", this.f);
+
+              console.log("p == ", p);
+
+              console.log("dm == ", dm);
+
+              console.log("firstDayOfCurrentMonth == ", firstDayOfCurrentMonth);
+              var cellvalue;
+              var sat;
+              
+              for (var d, i = 0, z0 = 0; z0 < 6; z0++) {
+                  html += '<tr>';
+                   
+                  console.log("Inside 1st for loop - d == " + d + " | i == " + i + " | z0 == " + z0);
+                  // d is the value of sunday
+                  // d -1  will be the value of saturday
+                  sat = d - 1;
+                 
+                  sun = d;
+                  if (sun)
+                      {
+                    array.push(sun);
+
+                   
+                  }
+
+                
+
+
+
+
+
+
+                  var countrow = $('#table1 tr').length;
+                 var countcol= $("table1").find("tr:first").length;
+                 // var countcol = $('#table1 td').length;
+                 // alert("Saturday"+ sat + "Sunday"+ d)
+                  for (var z0a = 0; z0a < 7; z0a++) {
+                      console.log("Inside 2nd for loop");
+
+                      console.log("z0a == " + z0a);
+
+                      d = i + dm - firstDayOfCurrentMonth;
+                     
+                      console.log("d outside if statm == " + d);
+                      
+                      // Dates from prev month
+                      if (d < 1) {
+                          console.log("d < 1");
+
+                          console.log("p before p++ == " + p);
+
+                          cellvalue = lastDateOfLastMonth - firstDayOfCurrentMonth + p++;
+
+                          console.log("p after p++ == " + p);
+
+                          console.log("cellvalue == " + cellvalue);
+
+
+
+                          // Dates from next month
+                      } else if (d > lastDateOfCurrentMonth) {
+                          console.log("d > lastDateOfCurrentMonth");
+
+                          console.log("p before p++ == " + p);
+
+
+                          console.log("p after p++ == " + p);
+
+                          // Current month dates
+                      } else {
+                          html += '<td id="currentmonthdates">' + (d) + '</td>';
+
+                          console.log("d inside else { == " + d);
+                          
+                          if (totaldays == 61)
+                          {
+                              totaldays=totaldays-30
+                          }
+                          totaldays++;
+                          p = 1;
+
+                          console.log("p inside } else { == " + p);
+                      }
+                      
+
+                      if (i % 7 == 6 && d >= lastDateOfCurrentMonth) {
+                          console.log("INSIDE if (i % 7 == 6 && d >= lastDateOfCurrentMonth) {");
+
+                          console.log("i == " + i);
+
+                          console.log("d == " + d);
+
+                          console.log("z0 == " + z0);
+
+                          z0 = 10; // no more rows
+                      }
+
+                      console.log("i before i++ == " + i);
+
+                      i++;
+
+                      console.log("i after i++ == " + i);
+                  }
+                  html += '</tr>';
+              }
+              sum = array.length;
+             // alert("splice"+splic)
+              sum = sum - splic;
+             // alert("sum" + sum)
+
+             
+              if (array.length == 8)
+              {
+                  array.splice(0,4)
+                  
+                  
+              }
+
+              if (array.length == 9) {
+                  array.splice(0,5)
+                 
+              }
+
+             
+              // Closes table
+              html += '</table>';
+              if (totaldays == 61)
+              {
+                  totaldays = totaldays-30;
+              }
+            
+              // Write HTML to the div
+              //document.getElementById("year").innerHTML = yearhtml;
+
+              //document.getElementById("month").innerHTML = monthhtml;
+
+              document.getElementById("monthandyear").innerHTML = monthandyearhtml;
+
+              document.getElementById(this.divId).innerHTML = html;
+          };
+         // On Load of the window
+          window.onload = function () {
+              
+              // Start calendar
+              var c = new Calendar({
+                  
+                  ParentID: "divcalendartable",
+
+                  DaysOfWeek: [
+                  'MON',
+                  'TUE',
+                  'WED',
+                  'THU',
+                  'FRI',
+                  'SAT',
+                  'SUN'
+                  ],
+
+                  Months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+
+                  Format: 'dd/mm/yyyy'
+              });
+
+              c.showCurrent();
+              var countofnine = 0;
+
+              // Bind next and previous button clicks
+              getId('btnPrev').onclick = function () {
+                  c.previousMonth();
+                 // alert("Araay length"+ array.length)
+                  
+                  //sum = array.length - sum;
+
+                 // var arrcount2 = array.length;
+               
+                 // alert(arrcount2)
+                 // var newcountminus;
+                 // if (arrcount2 % 2 == 0) {
+                 //     array.splice(0, 4);
+                 //     alert("even")
+                 // }
+                 //if(arrcount2==9) {
+                 //    countofnine++;
+                          
+                 //         if (countofnine > 1)
+                 //         {
+                 //             countofnine=0;
+                 //             array.splice(0, 5);
+                 //             countforodd = 0;
+                 //             alert("Arslan")
+                 //         }
+                 //         else {
+                 //             array.splice(0, 4);
+                 //         }
+                 //     // array.length = 4;
+                 //     alert("odd")
+                 //}
+                 // alert("countofnine"+countofnine)
+
+
+                  var rowtotal = document.getElementById("table1").rows.length;
+
+                  for (var rowst = 2; rowst < rowtotal; rowst++) {
+                      for (var column = 0; column <= 33; column++) {
+
+                        
+                          document.getElementById("table1").rows[rowst].cells[column].style.backgroundColor = "White";
+                          
+                      }
+                  }
+
+
+
+              };
+
+              getId('btnPrevYr').onclick = function () {
+                  c.previousYear();
+
+              };
+              var countforodd = 0;
+              getId('btnNext').onclick = function () {
+                  c.nextMonth();
+                  countforodd++;
+                 
+                  //var arrcount2 = array.length;
+
+                  //alert(arrcount2)
+                  //var newcountminus;
+                  //if (arrcount2 % 2 == 0) {
+                  //    array.splice(0, 4);
+                  //    alert("even")
+                  //}
+                  //if (arrcount2 == 9) {
+                  //    countforodd++;
+                  //    alert(countforodd)
+                  //    if (countforodd > 1) {
+                  //        countforodd=0;
+                  //        array.splice(0, 5);
+                         
+
+                  //        alert("Arslan")
+                  //    }
+                  //    else {
+                  //        array.splice(0, 4);
+                  //    }
+                  //    // array.length = 4;
+                  //    alert("odd")
+                  //}
+                  //alert("countofnine" + countofnine)
+
+
+
+
+
+                  var rowtotal = document.getElementById("table1").rows.length;
+                 
+                  for (var rowst = 2; rowst <= rowtotal; rowst++) {
+                      for (var column = 0; column <= 33; column++) {
+
+                          if (column && rowst)
+                              {
+                              document.getElementById("table1").rows[rowst].cells[column].style.backgroundColor = "White";
+                          }
+                      }
+                  }
+                    
+                
+              };
+
+              getId('btnNextYr').onclick = function () {
+                  c.nextYear();
+
+              };
+          }
+
+              
+          // Get element by id
+          function getId(id) {
+              return document.getElementById(id);
+          }
+    </script>
+
+   
+
+
+
+</body>
+<script src="newjavascript/custom.js"></script>
+</html>
+
+<script>
+   
+</script>
+<script>
+    function addrow() {
+       
+        $('#myModal').modal('show');
+       
+    }
+   
+
+    function secondmodal() {
+
+        if (selectedRsvtIndex == -1) {
+            alert("No reservation is selected");
+            return;
+        }
+
+        $('#myModalSmall').modal('show');
+        $('#myModal').modal('show');
+
+    }
+
+   
+
+</script>
